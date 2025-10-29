@@ -1,0 +1,134 @@
+window.addEventListener('load', function() {
+    let progress = 0;
+    const progressBar = document.getElementById('loaderProgress');
+    const loader = document.getElementById('loader');
+    
+    const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 600);
+            }, 200);
+        }
+    }, 25);
+});
+
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileNav = document.getElementById('mobileNav');
+const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+const body = document.body;
+
+function toggleMobileMenu() {
+    mobileNav.classList.toggle('active');
+    mobileNavOverlay.classList.toggle('active');
+    body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+    
+    const icon = mobileMenuBtn.querySelector('i');
+    if (mobileNav.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+    } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+    }
+}
+
+mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+mobileNavOverlay.addEventListener('click', toggleMobileMenu);
+
+document.querySelectorAll('.mobile-nav-item').forEach(item => {
+    item.addEventListener('click', toggleMobileMenu);
+});
+
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.main-header');
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.info-card, .faq-item, .social-card').forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(element);
+});
+
+document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', function() {
+        const faqItem = this.parentElement;
+        const wasActive = faqItem.classList.contains('active');
+        
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        if (!wasActive) {
+            faqItem.classList.add('active');
+        }
+    });
+});
+
+const contactForm = document.getElementById('contactForm');
+const successMessage = document.getElementById('successMessage');
+
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    successMessage.classList.add('show');
+    
+    contactForm.reset();
+    
+    setTimeout(() => {
+        successMessage.classList.remove('show');
+    }, 5000);
+    
+    window.scrollTo({
+        top: contactForm.offsetTop - 100,
+        behavior: 'smooth'
+    });
+});
+
+let lastScrollY = 0;
+mobileMenuBtn.addEventListener('click', function() {
+    if (!mobileNav.classList.contains('active')) {
+        lastScrollY = window.scrollY;
+    } else {
+        window.scrollTo(0, lastScrollY);
+    }
+});
