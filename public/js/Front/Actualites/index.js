@@ -96,90 +96,56 @@ document.querySelectorAll('.article-card').forEach(card => {
     observer.observe(card);
 });
 
-// Load More functionality
-document.querySelector('.load-more-btn').addEventListener('click', function() {
-    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
-    
-    setTimeout(() => {
-        this.innerHTML = 'Charger plus d\'articles <i class="fas fa-chevron-down"></i>';
-        
-        // Simulate loading more articles
-        alert('Fonctionnalité de chargement en développement');
-    }, 1500);
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.querySelector('.search-input-group input');
+    const categorySelect = document.querySelectorAll('.filter-select')[0];
+    const sortSelect = document.querySelectorAll('.filter-select')[1];
+    const filterBtn = document.querySelector('.filter-btn');
 
-// Newsletter form submission
-document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const emailInput = this.querySelector('.newsletter-input');
-    const submitBtn = this.querySelector('.newsletter-btn');
-    
-    if (emailInput.value) {
-        submitBtn.innerHTML = '<i class="fas fa-check"></i> Abonné !';
-        submitBtn.style.background = 'linear-gradient(135deg, var(--gold), var(--dark-gold))';
+    if (!searchInput || !filterBtn) return;
+
+    filterBtn.addEventListener('click', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categorySelect.value;
+        const sortBy = sortSelect.value;
         
+        console.log('Recherche:', searchTerm);
+        console.log('Catégorie:', selectedCategory);
+        console.log('Tri:', sortBy);
+        
+        this.innerHTML = '<i class="fas fa-check"></i> Filtré !';
         setTimeout(() => {
-            emailInput.value = '';
-            submitBtn.innerHTML = 'S\'abonner';
-            submitBtn.style.background = 'linear-gradient(135deg, var(--green), var(--dark-green))';
-        }, 3000);
-    }
-});
+            this.innerHTML = '<i class="fas fa-filter"></i> Filtrer';
+        }, 2000);
+    });
 
-// Search and filter functionality
-const searchInput = document.querySelector('.search-input-group input');
-const categorySelect = document.querySelectorAll('.filter-select')[0];
-const sortSelect = document.querySelectorAll('.filter-select')[1];
-const filterBtn = document.querySelector('.filter-btn');
-
-filterBtn.addEventListener('click', function() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const selectedCategory = categorySelect.value;
-    const sortBy = sortSelect.value;
-    
-    console.log('Recherche:', searchTerm);
-    console.log('Catégorie:', selectedCategory);
-    console.log('Tri:', sortBy);
-    
-    // Simulate filtering
-    this.innerHTML = '<i class="fas fa-check"></i> Filtré !';
-    setTimeout(() => {
-        this.innerHTML = '<i class="fas fa-filter"></i> Filtrer';
-    }, 2000);
-});
-
-// Real-time search
-searchInput.addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const articles = document.querySelectorAll('.article-card');
-    
-    articles.forEach(article => {
-        const title = article.querySelector('.article-title').textContent.toLowerCase();
-        const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const articles = document.querySelectorAll('.article-card');
         
-        if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
-            article.style.display = 'block';
-        } else {
-            article.style.display = searchTerm === '' ? 'block' : 'none';
-        }
+        articles.forEach(article => {
+            const title = article.querySelector('.article-title').textContent.toLowerCase();
+            const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+            
+            article.style.display =
+                title.includes(searchTerm) || excerpt.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    categorySelect.addEventListener('change', function() {
+        const selectedCategory = this.value;
+        const articles = document.querySelectorAll('.article-card');
+        
+        articles.forEach(article => {
+            const articleCategory = article.querySelector('.article-category').textContent;
+            article.style.display =
+                selectedCategory === 'Toutes catégories' || articleCategory === selectedCategory
+                    ? 'block'
+                    : 'none';
+        });
     });
 });
 
-// Category filter
-categorySelect.addEventListener('change', function() {
-    const selectedCategory = this.value;
-    const articles = document.querySelectorAll('.article-card');
-    
-    articles.forEach(article => {
-        const articleCategory = article.querySelector('.article-category').textContent;
-        
-        if (selectedCategory === 'Toutes catégories' || articleCategory === selectedCategory) {
-            article.style.display = 'block';
-        } else {
-            article.style.display = 'none';
-        }
-    });
-});
 
 // Animate featured article on scroll
 const featuredArticle = document.querySelector('.featured-article');

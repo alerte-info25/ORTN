@@ -19,8 +19,8 @@ class Media extends Model
         'slug',
         'description',
         'image',
-        'media_tags',  // Nom de la table pivot
-        'media_id',    // Clé étrangère du modèle actuel
+        'media_tags',  
+        'media_id',   
         'tags_id'
     ];
 

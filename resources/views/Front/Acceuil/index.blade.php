@@ -9,12 +9,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="{{ asset("css/Front/Acceuil/index.css") }}">
+    
 </head>
 <body>
 
     @include("Front.partials.loader")
 
     @include("Front.partials.header")
+
+    @php 
+        $alert = session('alert'); 
+    @endphp
+
+    @if ($alert && isset($alert['action']))
+        @include("Front.partials.popup")
+        <script>
+            window.popupData = @json($alert);
+        </script>
+    @endif
 
     <!-- Hero Section Révolutionnaire -->
     <section class="hero-section">
@@ -40,8 +52,8 @@
 
                     <div class="hero-stats-inline">
                         <div class="stat-inline">
-                            <div class="stat-inline-number">250+</div>
-                            <div class="stat-inline-label">Épisodes disponibles</div>
+                            <div class="stat-inline-number">100%</div>
+                            <div class="stat-inline-label">Accéssible partout</div>
                         </div>
                         <div class="stat-inline">
                             <div class="stat-inline-number">15</div>
@@ -54,14 +66,14 @@
                     </div>
 
                     <div class="hero-cta-group">
-                        <button class="btn-hero-primary">
-                            <i class="fas fa-play"></i>
-                            Découvrir les podcasts
-                        </button>
-                        <button class="btn-hero-secondary">
-                            <i class="fas fa-rss"></i>
-                            S'abonner gratuitement
-                        </button>
+                        <a href="{{ route("ortn.podcasts") }}" class="btn-hero-primary">
+                            <i class="fa-solid fa-microphone"></i>
+                            Podcasts audios
+                        </a>
+                        <a href="{{ route("ortn.podcastsvideos") }}" class="btn-hero-secondary">
+                            <i class="fa-solid fa-video"></i>
+                            Podcasts vidéos
+                        </a>
                     </div>
                 </div>
 
@@ -129,346 +141,268 @@
         </div>
     </section>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
+    <!-- Podcasts Grid -->
+    <section class="podcasts-section">
         <div class="container">
-            <div class="filter-container">
-                <div class="filter-tabs">
-                    <button class="filter-btn active">Tous</button>
-                    <button class="filter-btn">Actualités</button>
-                    <button class="filter-btn">Culture</button>
-                    <button class="filter-btn">Société</button>
-                    <button class="filter-btn">Sport</button>
-                    <button class="filter-btn">Économie</button>
-                </div>
+
+            <div class="podcasts-actions">
+                <h2 class="section-title">Podcasts audios</h2>
+
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Rechercher un podcast...">
                 </div>
             </div>
-        </div>
+
+            <div class="podcasts-grid">
+                @foreach ($audios as $audio)
+
+                    @php
+                        // $audioUrl = $audio->url_audio;
+                        // if (!Str::startsWith($audioUrl, ['http://', 'https://'])) {
+                        //     $audioUrl = asset('storage/' . ltrim($audioUrl, '/'));
+                        // }
+
+                        $audioUrl = $audio->url_audio;
+                        if (!Str::startsWith($audioUrl, ['http://', 'https://'])) {
+                            $audioUrl = asset('storage/' . ltrim($audioUrl, '/'));
+                        }
+                        $thumb = $audio->media->image ? (Str::startsWith($audio->media->image, ['http://','https://']) ? $audio->media->image : asset('storage/' . ltrim($audio->media->image, '/'))) : null;
+                    @endphp
+
+                    <div class="podcast-card">
+                        <div class="podcast-image-wrapper">
+                            <img src="{{ $audio->media->image }}" alt="{{ $audio->media->titre }}" style="object-fit: cover">
+                            @if($audio->categorieAudio)
+                                <span class="podcast-category-tag">{{ $audio->categorieAudio->libelle }}</span>
+                            @endif
+                            <div class="podcast-overlay">
+                                <div class="play-btn-small"
+                                    data-audio="{{ $audioUrl }}"
+                                    data-title="{{ e($audio->media->titre) }}"
+                                    data-sub="{{ $audio->categorieAudio ? e($audio->categorieAudio->libelle) : '' }}"
+                                    data-thumb="{{ $thumb }}">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="podcast-content">
+                            <h3 class="podcast-title">{{ $audio->media->titre }}</h3>
+                            <p class="podcast-description">
+                                {{ Str::limit($audio->media->description, 120) }}
+                            </p>
+                            <div class="podcast-footer">
+                                <span class="podcast-date">
+                                    <i class="far fa-calendar"></i>
+                                    {{ $audio->created_at->diffForHumans() }}
+                                </span>
+                                <div class="podcast-stats">
+                                    <span><i class="fas fa-headphones"></i> {{ rand(1000, 9000) }}</span>
+                                    <span><i class="far fa-heart"></i> {{ rand(100, 500) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div style="display:flex; justify-content:center; margin-top:1.5rem;">
+                <a href="{{ route("ortn.podcasts") }}" class="btn"
+                style="
+                    background: var(--gold);
+                    color: var(--dark-navy);
+                    font-weight:600;
+                    padding: 0.6rem 1.2rem;
+                    border-radius:8px;
+                    transition: 0.2s ease;
+                    text-decoration:none;
+                "
+                onmouseover="this.style.background= 'var(--dark-gold)'"
+                onmouseout="this.style.background= 'var(--gold)'"
+                >
+                    Voir plus
+                </a>
+            </div>
+
+        </div>  
     </section>
 
-    <!-- Podcasts Grid -->
-    <section class="podcasts-section">
+    <!-- NOUVELLE SECTION ACTUALITÉS -->
+    <section class="news-section">
         <div class="container">
-            <h2 class="section-title">Derniers épisodes</h2>
-            <div class="podcasts-grid">
-                <!-- Podcast Card 1 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Actualités</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            32 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Journal de la semaine - Édition du 28 octobre</h3>
-                        <p class="podcast-description">
-                            Retour sur les événements marquants de la semaine à Ngazidja et dans l'archipel des Comores.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
+            <h2 class="section-title">Dernières ctualités</h2>
+            <div class="news-grid">
+                <!-- Actualité -->
+                @forelse ($articles as $article)
+                    <div class="news-card">
+                        <div class="news-image-wrapper">
+                            <img src="{{ asset("storage/".$article->media->image) }}" alt="Actualité" class="news-image">
+                            <span class="news-category-tag">{{ $article->categorieArticle->libelle }}</span>
+                            <span class="news-date">
                                 <i class="far fa-calendar"></i>
-                                Il y a 2 jours
+                                {{ $article->created_at->format('d M') }}
                             </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 8.2K</span>
-                                <span><i class="far fa-heart"></i> 342</span>
+                        </div>
+                        <div class="news-content">
+                            <h3 class="news-title">
+                                {{ $article->media->titre }}
+                            </h3>
+                            <p class="news-excerpt">
+                                {{ $article->sous_titre }}
+                            </p>
+                            <div class="news-footer">
+                                <a href="{{ route("ortn.showArticles", ["slug" => $article->media->slug]) }}" class="news-read-more">
+                                    Lire la suite
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <div class="news-stats">
+                                    <span><i class="far fa-eye"></i> {{ $article->views }}</span>
+                                    <span><i class="far fa-comment"></i> 
+                                        {{ $article->commentaires_count }}
+                                        {{ Str::plural('commentaire', $article->commentaires_count) }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Podcast Card 2 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Culture</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            28 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Mémoires de Ngazidja - Les musiciens traditionnels</h3>
-                        <p class="podcast-description">
-                            À la rencontre des gardiens de la musique traditionnelle comorienne et leurs instruments ancestraux.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
-                                <i class="far fa-calendar"></i>
-                                Il y a 4 jours
-                            </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 6.7K</span>
-                                <span><i class="far fa-heart"></i> 289</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Podcast Card 3 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Économie</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            40 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Entreprendre aux Comores - Success stories</h3>
-                        <p class="podcast-description">
-                            Portraits d'entrepreneurs comoriens qui réussissent et partagent leurs expériences inspirantes.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
-                                <i class="far fa-calendar"></i>
-                                Il y a 5 jours
-                            </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 9.1K</span>
-                                <span><i class="far fa-heart"></i> 412</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Podcast Card 4 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Société</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            35 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Débat citoyen - L'éducation à Ngazidja</h3>
-                        <p class="podcast-description">
-                            Un débat ouvert sur les défis et opportunités du système éducatif à Ngazidja avec experts et citoyens.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
-                                <i class="far fa-calendar"></i>
-                                Il y a 1 semaine
-                            </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 7.8K</span>
-                                <span><i class="far fa-heart"></i> 356</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Podcast Card 5 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Sport</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            25 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Sport Comores - Les talents de demain</h3>
-                        <p class="podcast-description">
-                            Focus sur les jeunes sportifs comoriens qui brillent dans différentes disciplines sportives.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
-                                <i class="far fa-calendar"></i>
-                                Il y a 1 semaine
-                            </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 5.9K</span>
-                                <span><i class="far fa-heart"></i> 278</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Podcast Card 6 -->
-                <div class="podcast-card">
-                    <div class="podcast-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Podcast">
-                        <span class="podcast-category-tag">Santé</span>
-                        <span class="podcast-duration">
-                            <i class="fas fa-clock"></i>
-                            38 min
-                        </span>
-                        <div class="podcast-overlay">
-                            <div class="play-btn-small">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="podcast-content">
-                        <h3 class="podcast-title">Santé pour tous - Prévention et bien-être</h3>
-                        <p class="podcast-description">
-                            Conseils santé et témoignages de professionnels pour une meilleure prévention sanitaire aux Comores.
-                        </p>
-                        <div class="podcast-footer">
-                            <span class="podcast-date">
-                                <i class="far fa-calendar"></i>
-                                Il y a 2 semaines
-                            </span>
-                            <div class="podcast-stats">
-                                <span><i class="fas fa-headphones"></i> 6.4K</span>
-                                <span><i class="far fa-heart"></i> 301</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @empty
+                    <div class="alert alert-warning">Aucun article trouvé.</div>
+                @endforelse
             </div>
         </div>
+
+        <div style="display:flex; justify-content:center; margin-top:1.5rem;">
+            <a href="{{ route("ortn.actualites") }}" class="btn"
+            style="
+                background: var(--gold);
+                color: var(--dark-navy);
+                font-weight:600;
+                padding: 0.6rem 1.2rem;
+                border-radius:8px;
+                transition: 0.2s ease;
+                text-decoration:none;
+            "
+            onmouseover="this.style.background= 'var(--dark-gold)'"
+            onmouseout="this.style.background= 'var(--gold)'"
+            >
+                Voir plus
+            </a>
+        </div>
+
     </section>
 
-    <!-- Series Section -->
+    <!-- Programmes Section -->
     <section class="series-section">
         <div class="container">
-            <h2 class="section-title">Nos séries phares</h2>
+            <h2 class="section-title">Nos programmes en ce jour</h2>
 
-            <!-- Series Card 1 -->
-            <div class="series-card">
-                <div class="series-cover">
-                    <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Série">
-                </div>
-                <div class="series-info">
-                    <div class="series-category">🎙️ Actualités Hebdomadaires</div>
-                    <h3 class="series-title">La Semaine à Ngazidja</h3>
-                    <p class="series-description">
-                        Chaque semaine, retrouvez un condensé complet de l'actualité de Ngazidja et des Comores. Politique, économie, société et culture analysées en profondeur.
-                    </p>
-                    <div class="series-meta">
-                        <span class="series-meta-item">
-                            <i class="fas fa-list"></i>
-                            48 épisodes
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            Chaque lundi
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-users"></i>
-                            45K abonnés
-                        </span>
-                    </div>
-                    <div class="series-actions">
-                        <button class="btn-view-series">
-                            Voir tous les épisodes
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            @foreach($programmesDuJour as $programme)
+                @for($i = 1; $i <= 4; $i++)
+                    @php
+                        $start = data_get($programme, 'heure_debut'.$i);
+                        $end   = data_get($programme, 'heure_fin'.$i);
+                    @endphp
 
-            <!-- Series Card 2 -->
-            <div class="series-card">
-                <div class="series-cover">
-                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Série">
-                </div>
-                <div class="series-info">
-                    <div class="series-category">🎵 Culture & Patrimoine</div>
-                    <h3 class="series-title">Racines Comoriennes</h3>
-                    <p class="series-description">
-                        Une plongée au cœur de la culture comorienne. Traditions, musique, artisanat et témoignages pour préserver et transmettre notre riche patrimoine.
-                    </p>
-                    <div class="series-meta">
-                        <span class="series-meta-item">
-                            <i class="fas fa-list"></i>
-                            32 épisodes
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            Tous les 15 jours
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-users"></i>
-                            38K abonnés
-                        </span>
-                    </div>
-                    <div class="series-actions">
-                        <button class="btn-view-series">
-                            Voir tous les épisodes
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                    @if($start && $end)
+                        <div class="series-card">
+                            <div class="series-cover">
+                                <img src="{{ asset('storage/ortn_logo.png') }}" alt="Série">
+                            </div>
 
-            <!-- Series Card 3 -->
-            <div class="series-card">
-                <div class="series-cover">
-                    <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Série">
-                </div>
-                <div class="series-info">
-                    <div class="series-category">💬 Débats & Société</div>
-                    <h3 class="series-title">Paroles Citoyennes</h3>
-                    <p class="series-description">
-                        Un espace de dialogue ouvert où citoyens, experts et décideurs échangent sur les grands enjeux qui façonnent l'avenir de Ngazidja et des Comores.
-                    </p>
-                    <div class="series-meta">
-                        <span class="series-meta-item">
-                            <i class="fas fa-list"></i>
-                            25 épisodes
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            Chaque mercredi
-                        </span>
-                        <span class="series-meta-item">
-                            <i class="fas fa-users"></i>
-                            52K abonnés
-                        </span>
-                    </div>
-                    <div class="series-actions">
-                        <button class="btn-view-series">
-                            Voir tous les épisodes
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
+                            <div class="series-info">
+                                <div class="series-category">
+                                    🎙️ {{ $programme->typeProgramme->libelle ?? 'Sans type' }}
+                                </div>
+
+                                <h3 class="series-title">{{ $programme->nom }}</h3>
+
+                                <p class="series-description">
+                                    {{ Str::limit($programme->description, 150) }}
+                                </p>
+
+                                <div class="series-meta">
+                                    <span class="series-meta-item">
+                                        <i class="fas fa-list"></i>
+                                        {{ \Carbon\Carbon::parse($start)->format('H:i') }}
+                                        -
+                                        {{ \Carbon\Carbon::parse($end)->format('H:i') }}
+                                    </span>
+
+                                    <span class="series-meta-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Chaque {{ ucfirst($jourActuel) }}
+                                    </span>
+
+                                    <span class="series-meta-item">
+                                        <i class="fas fa-users"></i>
+                                        Animateur :
+                                        {{ $programme->animateur ?? 'Non spécifié' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endfor
+            @endforeach
+
+        </div>
+
+        <div style="display:flex; justify-content:center; margin-top:1.5rem;">
+            <a href="{{ route("ortn.programmes") }}" class="btn"
+            style="
+                background: var(--gold);
+                color: var(--dark-navy);
+                font-weight:600;
+                padding: 0.6rem 1.2rem;
+                border-radius:8px;
+                transition: 0.2s ease;
+                text-decoration:none;
+            "
+            onmouseover="this.style.background= 'var(--dark-gold)'"
+            onmouseout="this.style.background= 'var(--gold)'"
+            >
+                Voir tout les programmes
+            </a>
+        </div>
+
+    </section>
+
+    <!-- Mini sticky audio player (place avant </body>) -->
+    <div id="audioPlayerContainer" role="region" aria-label="Lecteur audio">
+        <img id="audioPlayerThumb" src="" alt="Artwork">
+        <div id="audioPlayerInfo">
+            <div id="audioPlayerTitle">Titre</div>
+            <div id="audioPlayerSub">Catégorie • Durée</div>
+
+            <div style="display:flex; gap:8px; align-items:center;">
+                <div id="audioProgress" title="Cliquer pour seek">
+                    <div id="audioProgressBar"></div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <div id="audioPlayerControls">
+            <button id="togglePlayBtn" class="player-btn" aria-label="Play/Pause">
+                <i id="togglePlayIcon" class="fas fa-play"></i>
+            </button>
+            <div id="audioTimes" style="color:var(--light-gray); font-size:12px;">
+                <span id="currentTime">0:00</span> / <span id="durationTime">0:00</span>
+            </div>
+        </div>
+
+        <!-- Element audio natif (caché) -->
+        <audio id="globalAudioPlayer" preload="metadata"></audio>
+    </div>
 
     @include("Front.partials.footer")
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="{{ asset("js/Front/Acceuil/index.js") }}"></script>
+
+    @if ($alert && isset($alert['action']))
+        <script src="{{ asset("js/Front/popupInitialize.js") }}"></script>
+    @endif
 
 </body>
 </html>

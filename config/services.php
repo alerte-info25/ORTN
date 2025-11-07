@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'cinetpay' => [
+        'site_id' => env('CINETPAY_SITE_ID'),
+        'api_key' => env('CINETPAY_API_KEY'),
+        'secret_key' => env('CINETPAY_SECRET_KEY'),
+        'mode' => env('CINETPAY_MODE', 'production'), 
+
+        'base_url' => env('CINETPAY_MODE', 'sandbox') === 'production' 
+            ? 'https://api-checkout.cinetpay.com/v2/payment'
+            : 'https://api-checkout.cinetpay.com/v2/payment', 
+    ],
+
 ];

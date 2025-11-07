@@ -131,4 +131,9 @@ class User extends Authenticatable
         return $this->hasMany(Partenaire::class);
     }
 
+    public function events ()
+    {
+        return $this->hasMany(Event::class);
+    }
+
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -45,19 +45,15 @@
                 </div>
                 <select class="filter-select">
                     <option>Toutes catégories</option>
-                    <option>Politique</option>
-                    <option>Économie</option>
-                    <option>Culture</option>
-                    <option>Sport</option>
-                    <option>Santé</option>
-                    <option>Éducation</option>
-                    <option>Société</option>
+                    @foreach ($categoriesArticle as $cat)
+                        <option value="{{ $cat->libelle }}">{{ $cat->libelle }}</option>
+                    @endforeach
                 </select>
-                <select class="filter-select">
+                {{-- <select class="filter-select">
                     <option>Plus récents</option>
                     <option>Plus vus</option>
                     <option>Plus commentés</option>
-                </select>
+                </select> --}}
                 <button class="filter-btn">
                     <i class="fas fa-filter"></i> Filtrer
                 </button>
@@ -70,33 +66,34 @@
         <div class="container">
             <div class="featured-article">
                 <div class="featured-image-wrapper">
-                    <span class="featured-badge">🔥 À LA UNE</span>
-                    <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article principal" class="featured-image">
+                    <span class="featured-badge">À LA UNE</span>
+                    <img src="{{ asset("storage/".$featuredArticle->media->image) }}" alt="Article principal" class="featured-image">
                 </div>
                 <div class="featured-content">
-                    <span class="featured-category">Politique</span>
-                    <h2 class="featured-title">Sommet de la CEDEAO : Le Ngazidja au cœur des discussions régionales</h2>
+                    <span class="featured-category">{{ $featuredArticle->categorieArticle->libelle }}</span>
+                    <h2 class="featured-title">{{ $featuredArticle->media->titre }}</h2>
                     <p class="featured-excerpt">
-                        La délégation nigérienne a présenté plusieurs initiatives majeures lors du sommet annuel de la CEDEAO, portant notamment sur la sécurité, le développement économique et la coopération transfrontalière. Ces propositions ont été saluées par l'ensemble des États membres.
+                        {!! Str::limit(strip_tags($featuredArticle->media->description), 150) !!}
                     </p>
                     <div class="featured-meta">
                         <span class="meta-item">
                             <i class="far fa-clock"></i>
-                            Il y a 30 minutes
+                            {{ $featuredArticle->created_at->diffForHumans() }}
                         </span>
                         <span class="meta-item">
                             <i class="far fa-eye"></i>
-                            12.5K vues
+                            {{ $featuredArticle->views }}
                         </span>
                         <span class="meta-item">
                             <i class="far fa-comment"></i>
-                            248 commentaires
+                            {{ $featuredArticle->commentaires_count }}
+                            {{ Str::plural('commentaire', $featuredArticle->commentaires_count) }}
                         </span>
                     </div>
-                    <button class="featured-btn">
+                    <a href="{{ route("ortn.showArticles", ["slug" => $featuredArticle->media->slug]) }}" class="featured-btn" style="text-decoration: none">
                         Lire l'article complet
                         <i class="fas fa-arrow-right"></i>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -110,220 +107,45 @@
             </div>
 
             <div class="articles-grid">
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Économie</span>
-                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Le secteur agricole enregistre une croissance de 8%</h3>
-                        <p class="article-excerpt">
-                            Les nouvelles politiques de soutien aux agriculteurs portent leurs fruits avec une augmentation significative de la production céréalière.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 1h</span>
-                                <span><i class="far fa-eye"></i> 3.2K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Culture</span>
-                        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Festival Cure Salée : Un succès retentissant à Ingall</h3>
-                        <p class="article-excerpt">
-                            Des milliers de visiteurs ont célébré la culture touareg lors de cette édition exceptionnelle du festival traditionnel.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 2h</span>
-                                <span><i class="far fa-eye"></i> 5.8K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                {{-- @dd(get_defined_vars()) --}}
 
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Éducation</span>
-                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Construction de 150 nouvelles salles de classe à Niamey</h3>
-                        <p class="article-excerpt">
-                            Le gouvernement lance un vaste programme de construction pour améliorer l'accès à l'éducation dans la capitale.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 3h</span>
-                                <span><i class="far fa-eye"></i> 4.1K</span>
+                @forelse ($articles as $index => $article)
+                    <div class="article-card" data-index="{{ $index }}">
+                        <div class="article-image-wrapper">
+                            <span class="article-category">{{ $article->categorieArticle->libelle }}</span>
+                            <img src="{{ asset("storage/".$article->media->image) }}" alt="Article" class="article-image">
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">{{ $article->media->titre }}</h3>
+                            <p class="article-excerpt">
+                                {!! Str::limit(strip_tags($article->media->description), 150) !!}
+                            </p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span><i class="far fa-clock"></i> {{ $article->created_at->diffForHumans() }}</span>
+                                    <span><i class="far fa-eye"></i> {{ $article->views }}</span>
+                                </div>
+                                <a href="{{ route("ortn.showArticles", ["slug" => $article->media->slug]) }}" class="read-more">
+                                    Lire plus
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
                         </div>
                     </div>
-                </div>
+                @empty
+                    <div class="alert alert-warning">Aucun article trouvé.</div>
+                @endforelse
 
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Sport</span>
-                        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Les Menas se qualifient pour la phase finale de la CAN</h3>
-                        <p class="article-excerpt">
-                            L'équipe nationale de football décroche sa qualification après une victoire éclatante face au Burkina Faso.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 4h</span>
-                                <span><i class="far fa-eye"></i> 8.9K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Santé</span>
-                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Lancement d'une campagne nationale de dépistage du paludisme</h3>
-                        <p class="article-excerpt">
-                            Le ministère de la Santé mobilise toutes les régions pour une vaste campagne de prévention et de dépistage.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 5h</span>
-                                <span><i class="far fa-eye"></i> 3.7K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Société</span>
-                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Inclusion numérique : 500 villages connectés à Internet</h3>
-                        <p class="article-excerpt">
-                            Un programme ambitieux vise à réduire la fracture numérique en équipant les zones rurales en connexion haut débit.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 6h</span>
-                                <span><i class="far fa-eye"></i> 6.2K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Environnement</span>
-                        <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Grande Muraille Verte : Le Ngazidja plante 2 millions d'arbres</h3>
-                        <p class="article-excerpt">
-                            Dans le cadre du projet panafricain, des milliers de volontaires participent à la reforestation du Sahel.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 1j</span>
-                                <span><i class="far fa-eye"></i> 5.4K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">Technologie</span>
-                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Innovation : Des startups nigériennes primées à Lagos</h3>
-                        <p class="article-excerpt">
-                            Trois jeunes entreprises technologiques du Ngazidja remportent des prix lors du sommet africain de l'innovation.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 1j</span>
-                                <span><i class="far fa-eye"></i> 4.8K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article-card">
-                    <div class="article-image-wrapper">
-                        <span class="article-category">International</span>
-                        <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Article" class="article-image">
-                    </div>
-                    <div class="article-content">
-                        <h3 class="article-title">Coopération bilatérale : Accord commercial avec le Maroc</h3>
-                        <p class="article-excerpt">
-                            Les deux pays signent un partenariat stratégique visant à renforcer les échanges économiques et culturels.
-                        </p>
-                        <div class="article-footer">
-                            <div class="article-meta">
-                                <span><i class="far fa-clock"></i> Il y a 2j</span>
-                                <span><i class="far fa-eye"></i> 7.1K</span>
-                            </div>
-                            <a href="#" class="read-more">
-                                Lire plus
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Load More -->
             <div class="load-more-container">
-                <button class="load-more-btn">
+                {{-- <button class="load-more-btn">
                     Charger plus d'articles
                     <i class="fas fa-chevron-down"></i>
-                </button>
+                </button> --}}
+                {{ $articles->links() }}
             </div>
         </div>
     </section>
@@ -336,13 +158,23 @@
                     <i class="fas fa-envelope-open-text"></i>
                 </div>
                 <h2 class="newsletter-title">Restez informé en temps réel</h2>
+
+                @if (session()->has("alert"))
+                    <div class="alert alert-{{ session("alert")["type"] }}">
+                        {{ session("alert")["message"] }}
+                    </div>
+                @endif
+
                 <p class="newsletter-description">
                     Abonnez-vous à notre newsletter et recevez les dernières actualités directement dans votre boîte mail.
                 </p>
-                <form class="newsletter-form">
-                    <input type="email" class="newsletter-input" placeholder="Votre adresse email" required>
-                    <button type="submit" class="newsletter-btn">
-                        S'abonner
+                <form method="POST" action="{{ route("ortn.newsletters.store") }}">
+                    @csrf
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Votre adresse email" required style="border-radius: 2px solid rgba(255,255,255,0.5); padding: 12px 20px; border: none;">
+                    </div>
+                    <button type="submit" class="btn w-100" style="background: white; color: var(--primary-red); border-radius: 2px solid rgba(255,255,255,0.5); padding: 12px; font-weight: 600; border: none;">
+                        S'abonner maintenant
                     </button>
                 </form>
             </div>

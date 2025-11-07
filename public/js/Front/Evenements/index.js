@@ -114,13 +114,6 @@ filterButtons.forEach(button => {
     });
 });
 
-document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const emailInput = this.querySelector('input');
-    alert('Merci de votre inscription ! Vous recevrez désormais toutes nos actualités sur les événements.');
-    emailInput.value = '';
-});
-
 let lastScrollY = 0;
 mobileMenuBtn.addEventListener('click', function() {
     if (!mobileNav.classList.contains('active')) {

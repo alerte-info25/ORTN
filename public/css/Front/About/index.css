@@ -63,6 +63,9 @@ body {
     66% { transform: translate(-30px, 30px) rotate(240deg); }
 }
 
+/* dropdown actions */
+/* dropdown actions */
+
 #loader {
     position: fixed;
     top: 0;

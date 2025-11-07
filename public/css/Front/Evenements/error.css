@@ -1,0 +1,363 @@
+:root {
+    --navy-blue: #003366;
+    --dark-navy: #002244;
+    --gold: #FFD700;
+    --dark-gold: #DAA520;
+    --green: #2D8659;
+    --dark-green: #1F5F3F;
+    --red: #e74c3c;
+    --dark-red: #c0392b;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--light-gray) 0%, #ffe6e6 100%);
+    color: var(--navy-blue);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.failure-container {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,51,102,0.15);
+    padding: 3rem;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.failure-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+}
+
+.failure-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--red), var(--dark-red));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.failure-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--navy-blue);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.failure-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.error-details {
+    background: #fff5f5;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    border-left: 4px solid var(--red);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #fed7d7;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--navy-blue);
+}
+
+.detail-value {
+    font-weight: 600;
+    color: var(--navy-blue);
+}
+
+.event-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 2px solid var(--medium-gray);
+    text-align: left;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.event-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.event-info {
+    flex: 1;
+}
+
+.event-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 0.5rem;
+}
+
+.event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.event-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.event-meta-item i {
+    color: var(--red);
+    width: 16px;
+}
+
+.ticket-badge {
+    background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+    color: var(--navy-blue);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.actions-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: var(--red);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--dark-red);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+}
+
+.btn-secondary {
+    background: var(--navy-blue);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--dark-navy);
+    transform: translateY(-3px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--navy-blue);
+    border: 2px solid var(--medium-gray);
+}
+
+.btn-outline:hover {
+    background: var(--medium-gray);
+    transform: translateY(-3px);
+}
+
+.error-message {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(255, 215, 0, 0.1));
+    border-left: 4px solid var(--red);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.error-message h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--navy-blue);
+    margin-bottom: 0.5rem;
+}
+
+.error-message h4 i {
+    color: var(--red);
+}
+
+.error-message p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.suggestions-list {
+    text-align: left;
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.suggestions-list li {
+    margin-bottom: 0.8rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.transaction-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.transaction-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.transaction-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.transaction-value {
+    font-weight: 700;
+    color: var(--navy-blue);
+}
+
+.status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.status-failed {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--red);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .failure-container {
+        padding: 2rem;
+    }
+    
+    .failure-title {
+        font-size: 1.8rem;
+    }
+    
+    .event-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .actions-container {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .failure-container {
+        padding: 1.5rem;
+    }
+    
+    .failure-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .failure-title {
+        font-size: 1.5rem;
+    }
+    
+    .error-details {
+        padding: 1.5rem;
+    }
+}

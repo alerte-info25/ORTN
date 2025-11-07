@@ -12,6 +12,8 @@
 </head>
 <body>
 
+    @include("Front.partials.loader")
+
     @include("Front.partials.header")
 
     <section class="page-hero">
@@ -84,16 +86,22 @@
                 </div>
 
                 <div class="contact-form-wrapper">
-                    <div class="success-message" id="successMessage">
-                        <i class="fas fa-check-circle"></i> Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
-                    </div>
 
                     <h2 class="form-title">Envoyez-nous un message</h2>
                     <p class="form-subtitle">
                         Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les meilleurs délais.
                     </p>
 
-                    <form id="contactForm">
+                    <form id="contactForm" method="POST" action="{{ route("ortn.contact.send") }}">
+                        @csrf
+
+                        @if (session()->has("alert"))
+                            <div class="success-message show" id="successMessage">
+                                <i class="fas fa-check-circle"></i> 
+                                {{ session("alert")["message"] }}
+                            </div>
+                        @endif
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="firstName">Prénom *</label>
@@ -139,6 +147,7 @@
                             Envoyer le message
                         </button>
                     </form>
+
                 </div>
             </div>
         </div>

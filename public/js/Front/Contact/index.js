@@ -104,26 +104,6 @@ document.querySelectorAll('.faq-question').forEach(question => {
     });
 });
 
-const contactForm = document.getElementById('contactForm');
-const successMessage = document.getElementById('successMessage');
-
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    successMessage.classList.add('show');
-    
-    contactForm.reset();
-    
-    setTimeout(() => {
-        successMessage.classList.remove('show');
-    }, 5000);
-    
-    window.scrollTo({
-        top: contactForm.offsetTop - 100,
-        behavior: 'smooth'
-    });
-});
-
 let lastScrollY = 0;
 mobileMenuBtn.addEventListener('click', function() {
     if (!mobileNav.classList.contains('active')) {
